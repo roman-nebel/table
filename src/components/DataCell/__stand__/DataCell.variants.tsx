@@ -23,9 +23,10 @@ const Variants = () => {
 
   const text = useText('text', 'Значение ячейки');
   const size = useSelect('size', ['m', 's'], 'm');
+  const align = useSelect('align', ['left', 'right', 'center'], 'left');
   const view = useSelect(
     'view',
-    ['primary', 'alert', 'success', 'warning'],
+    ['primary', 'secondary', 'alert', 'success', 'warning'],
     'primary',
   );
   const widthIcon = useBoolean('widthIcon');
@@ -82,6 +83,7 @@ const Variants = () => {
         icon={widthIcon ? IconPhone : undefined}
         control={controlMap[control || 'without control']}
         indicator={indicator}
+        align={align}
       >
         {children}
       </DataCell>

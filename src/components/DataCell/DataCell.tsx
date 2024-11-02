@@ -2,11 +2,13 @@ import './DataCell.css';
 
 import { IconComponent } from '@consta/icons/Icon';
 import { cnMixFlex } from '@consta/uikit/MixFlex';
-import { cnMixSpace, Space } from '@consta/uikit/MixSpace';
+import { cnMixSpace } from '@consta/uikit/MixSpace';
 import { Text } from '@consta/uikit/Text';
 import React, { forwardRef, Fragment } from 'react';
 
 import { cn } from '##/utils/bem';
+import { cellJustifyMap } from '##/utils/maps/cellJustifyMap';
+import { cellVerticalSpaceMap } from '##/utils/maps/cellVerticalSpaceMap';
 import { isNumber, isString } from '##/utils/type-guards';
 
 const cnDataCell = cn('DataCell');
@@ -16,9 +18,10 @@ export type DataCellProps = {
   icon?: IconComponent | IconComponent[];
   children?: React.ReactNode | JSX.Element[];
   level?: number;
-  view?: 'primary' | 'alert' | 'success' | 'warning';
+  view?: 'primary' | 'alert' | 'success' | 'warning' | 'secondary';
   size?: 'm' | 's';
   indicator?: 'alert' | 'warning';
+  align?: 'left' | 'right' | 'center';
 } & JSX.IntrinsicElements['div'];
 
 const renderContentSlot = (children: DataCellProps['children']) => (
@@ -46,7 +49,7 @@ const renderChildren = (
     return renderContentSlot(
       <Text
         className={cnMixSpace({
-          pV: contentVerticalSpaseMap[size],
+          pV: cellVerticalSpaceMap[size],
         })}
         view={view}
         size={size}
@@ -56,14 +59,6 @@ const renderChildren = (
     );
   }
   return renderContentSlot(children);
-};
-
-const contentVerticalSpaseMap: Record<
-  Exclude<DataCellProps['size'], undefined>,
-  Space
-> = {
-  m: 's',
-  s: 'xs',
 };
 
 export const DataCell = forwardRef<HTMLDivElement, DataCellProps>(
@@ -77,6 +72,7 @@ export const DataCell = forwardRef<HTMLDivElement, DataCellProps>(
       view,
       size = 'm',
       indicator,
+      align,
     } = props;
     const level = levelProp < 0 ? 0 : levelProp;
 
@@ -110,7 +106,13 @@ export const DataCell = forwardRef<HTMLDivElement, DataCellProps>(
             indicator: Boolean(indicator),
             alignmentIndent: level >= 1 && controlsSlots.length === 0,
           },
-          [cnMixFlex({ flex: 'flex' }), className],
+          [
+            cnMixFlex({
+              flex: 'flex',
+              justify: align ? cellJustifyMap[align] : undefined,
+            }),
+            className,
+          ],
         )}
         style={{
           ['--table-data-cell-level' as string]: level || undefined,
